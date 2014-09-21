@@ -20,6 +20,12 @@
 static int DHTPIN = 7;
 static int dht22_dat[5] = {0,0,0,0,0};
 
+static void start_exec()
+{
+  const char* cmd = "/usr/bin/php /home/pi/development/humiditychart/pi2web/cronjob.php";
+  system( cmd );
+}
+
 static void write_to_file( const float h, const float t )
 {
 
@@ -110,6 +116,7 @@ static int read_dht22_dat()
 
     printf("Humidity = %.2f %% Temperature = %.2f *C \n", h, t );
     write_to_file( h, t );
+    start_exec();
     return 1;
   }
   else
