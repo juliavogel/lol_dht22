@@ -12,12 +12,32 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "locking.h"
 
 #define MAXTIMINGS 85
 static int DHTPIN = 7;
 static int dht22_dat[5] = {0,0,0,0,0};
+
+static void write_to_file( const float h, const float t )
+{
+
+  printf( "write to file \r\n" );
+  FILE* fp = NULL;
+  fp = fopen( "/tmp/sensor.data", "w+" );
+
+  if( !fp ){
+    printf( "failed to write sensor data to file" );
+	return;
+  } 
+
+  fprintf( fp, "h=%.2f\r\n", h );
+  fprintf( fp, "t=%.2f\r\n", t );
+  fprintf( fp, "ts=%d", (int)time(NULL) );
+
+  fclose( fp );
+}
 
 static uint8_t sizecvt(const int read)
 {
@@ -89,6 +109,7 @@ static int read_dht22_dat()
 
 
     printf("Humidity = %.2f %% Temperature = %.2f *C \n", h, t );
+    write_to_file( h, t );
     return 1;
   }
   else
